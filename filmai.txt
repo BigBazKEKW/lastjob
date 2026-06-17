@@ -1,0 +1,16 @@
+Sauliuko nuotykiai;Komedija;2001;Jonas Jonaitis;7.5
+Tamsos riteris;Veiksmas;2008;Christopher Nolan;9
+Pradzia;Mokslines fantastikos;2010;Christopher Nolan;8.8
+Matrica;Mokslines fantastikos;1999;Wachowski;8.7
+Krestatevis;Drama;1972;Francis Ford Coppola;9.2
+Pulp Fiction;Kriminalinis;1994;Quentin Tarantino;8.9
+Forrest Gump;Drama;1994;Robert Zemeckis;8.8
+Begantis skustuvo asmenimi;Mokslines fantastikos;1982;Ridley Scott;8.1
+Gladiatorius;Veiksmas;2000;Ridley Scott;8.5
+Titanikas;Drama;1997;James Cameron;7.9
+Avataras;Mokslines fantastikos;2009;James Cameron;7.9
+Begantis traukinys;Veiksmas;1985;Andrei Konchalovsky;7.2
+Liutas karalius;Animacija;1994;Roger Allers;8.5
+Ratatouille;Animacija;2007;Brad Bird;8.1
+Tarp zvaigzdziu;Mokslines fantastikos;2014;Christopher Nolan;8.6
+Babadukas;Siaubo;2014;Jennifer Kent;6.8
