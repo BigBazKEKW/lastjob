@@ -1,11 +1,6 @@
-// iostream  - konsoles ivedimui/isvedimui
-// fstream   - failu skaitymui ir rasymui
-// vector    - dinaminiam masyvui (filmu sarasui)
-// string    - teksto eiluciu darbui
-// sstream   - eilutes dalijimui pagal ; (parsinimas)
-// algorithm - rikiavimo funkcijai sort
-// cstdlib   - bendros pagalbines funkcijos (exit ir pan.)
-// limits    - cin srauto valymui esant netinkamai ivesciai
+// filmu_katalogas.cpp
+// Kompiliuoti: g++ -std=c++17 -O2 filmu_katalogas.cpp -o filmu_katalogas
+// Paleisti:    ./filmu_katalogas
 
 #include <iostream>
 #include <fstream>
@@ -15,6 +10,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <limits>
+#include <cctype>
 
 using namespace std;
 
@@ -40,17 +36,54 @@ void isvalytiIvedima()
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
+// Grazina eilute mazosiomis raidemis (palyginimui)
+string iMazasias(const string &s)
+{
+    string r = s;
+    for (size_t i = 0; i < r.size(); i++)
+    {
+        r[i] = (char)tolower((unsigned char)r[i]);
+    }
+    return r;
+}
+
+// Suformatuoja teksta: pirma kiekvieno zodzio raide didzioji, kitos - mazosios
+string suformatuotiTeksta(const string &s)
+{
+    string r = s;
+    bool naujasZodis = true;
+    for (size_t i = 0; i < r.size(); i++)
+    {
+        unsigned char c = (unsigned char)r[i];
+        if (isspace(c) || c == '-')
+        {
+            naujasZodis = true;
+        }
+        else
+        {
+            if (naujasZodis)
+            {
+                r[i] = (char)toupper(c);
+            }
+            else
+            {
+                r[i] = (char)tolower(c);
+            }
+            naujasZodis = false;
+        }
+    }
+    return r;
+}
+
 // Sukuria pradini faila su 15 irasu, jei jo dar nera
 void sukurtiPradiniFaila()
 {
-    // Pradeda irasyma i faila (pradiniai duomenys)
     ofstream isvestis(FAILO_VARDAS);
     if (!isvestis.is_open())
     {
         cout << "Klaida: nepavyko sukurti failo " << FAILO_VARDAS << endl;
         return;
     }
-    // Iraso duomenis i faila
     isvestis << "Sauliuko nuotykiai;Komedija;2001;Jonas Jonaitis;7.5\n";
     isvestis << "Tamsos riteris;Veiksmas;2008;Christopher Nolan;9.0\n";
     isvestis << "Pradzia;Mokslines fantastikos;2010;Christopher Nolan;8.8\n";
@@ -67,16 +100,13 @@ void sukurtiPradiniFaila()
     isvestis << "Ratatouille;Animacija;2007;Brad Bird;8.1\n";
     isvestis << "Tarp zvaigzdziu;Mokslines fantastikos;2014;Christopher Nolan;8.6\n";
     isvestis.close();
-    // Baigia irasyma i faila
     cout << "Sukurtas naujas failas " << FAILO_VARDAS << " su pradiniais duomenimis." << endl;
 }
 
 // Nuskaito visus filmus is failo i globaluji vektoriu
 void nuskaitytiIsFailo()
 {
-    // Pradeda duomenu nuskaitymas is failo
     ifstream ivestis(FAILO_VARDAS);
-    // Tikrina ar failas egzistuoja
     if (!ivestis.is_open())
     {
         cout << "Failas " << FAILO_VARDAS << " nerastas. Kuriamas naujas..." << endl;
@@ -105,7 +135,6 @@ void nuskaitytiIsFailo()
         getline(ss, f.rezisierius, ';');
         getline(ss, ivertStr, ';');
 
-        // Tikrina ar laukai konvertuojami i skaicius
         try
         {
             f.metai = stoi(metaiStr);
@@ -118,20 +147,17 @@ void nuskaitytiIsFailo()
         }
     }
     ivestis.close();
-    // Baigia duomenu nuskaityma is failo
 }
 
-// Iraso visus globalaus vektoriaus filmus i faila (perrasoma)
+// Iraso visus globalaus vektoriaus filmus i faila
 void issaugotiIFaila()
 {
-    // Pradeda irasyma i faila
     ofstream isvestis(FAILO_VARDAS);
     if (!isvestis.is_open())
     {
         cout << "Klaida: nepavyko atidaryti failo rasymui." << endl;
         return;
     }
-    // Iraso duomenis i faila
     for (size_t i = 0; i < filmai.size(); i++)
     {
         isvestis << filmai[i].pavadinimas << ";"
@@ -141,7 +167,6 @@ void issaugotiIFaila()
                  << filmai[i].ivertinimas << "\n";
     }
     isvestis.close();
-    // Baigia irasyma i faila
 }
 
 // Atvaizduoja viena filma su jo indeksu
@@ -155,7 +180,7 @@ void rodytiFilma(const Filmas &f, int indeksas)
          << f.ivertinimas << endl;
 }
 
-// Read: parodo visus filmus konsoleje
+// Read: parodo visus filmus
 void rodytiVisus(const vector<Filmas> &sarasas)
 {
     if (sarasas.empty())
@@ -170,13 +195,12 @@ void rodytiVisus(const vector<Filmas> &sarasas)
     }
 }
 
-// Read: ieskoma pagal indeksa arba pavadinima ir parodomas vienas filmas
+// Read: ieskoma pagal indeksa arba pavadinima
 void rodytiVienaFilma(const vector<Filmas> &sarasas)
 {
     cout << "Pasirinkite: 1 - pagal indeksa, 2 - pagal pavadinima: ";
     int pasirinkimas;
     cin >> pasirinkimas;
-    // Tikrina ar ivestis sekminga
     if (cin.fail())
     {
         isvalytiIvedima();
@@ -197,7 +221,6 @@ void rodytiVienaFilma(const vector<Filmas> &sarasas)
             return;
         }
         isvalytiIvedima();
-        // Tikrina ar indeksas teisingas
         if (idx < 0 || idx >= (int)sarasas.size())
         {
             cout << "Neegzistuojantis indeksas." << endl;
@@ -210,10 +233,11 @@ void rodytiVienaFilma(const vector<Filmas> &sarasas)
         cout << "Iveskite pavadinima: ";
         string pav;
         getline(cin, pav);
+        string pavZemas = iMazasias(pav);
         bool rasta = false;
         for (size_t i = 0; i < sarasas.size(); i++)
         {
-            if (sarasas[i].pavadinimas == pav)
+            if (iMazasias(sarasas[i].pavadinimas) == pavZemas)
             {
                 rodytiFilma(sarasas[i], (int)i);
                 rasta = true;
@@ -228,19 +252,22 @@ void rodytiVienaFilma(const vector<Filmas> &sarasas)
     }
 }
 
-// Create: prideda nauja filma (modifikuoja perduota vektoriu per nuoroda)
+// Create: prideda nauja filma
 void pridetiFilma(vector<Filmas> &sarasas)
 {
-    // --- PRIDEDAMA: naujas filmas ---
     Filmas f;
+    string laikinas;
+
     cout << "Iveskite pavadinima: ";
-    getline(cin, f.pavadinimas);
+    getline(cin, laikinas);
+    f.pavadinimas = suformatuotiTeksta(laikinas);
+
     cout << "Iveskite zanra: ";
-    getline(cin, f.zanras);
+    getline(cin, laikinas);
+    f.zanras = suformatuotiTeksta(laikinas);
 
     cout << "Iveskite metus: ";
     cin >> f.metai;
-    // Tikrina ar metai - skaicius
     if (cin.fail())
     {
         isvalytiIvedima();
@@ -250,11 +277,11 @@ void pridetiFilma(vector<Filmas> &sarasas)
     isvalytiIvedima();
 
     cout << "Iveskite rezisieriu: ";
-    getline(cin, f.rezisierius);
+    getline(cin, laikinas);
+    f.rezisierius = suformatuotiTeksta(laikinas);
 
     cout << "Iveskite ivertinima (0.0 - 10.0): ";
     cin >> f.ivertinimas;
-    // Tikrina ar ivertinimas tinkamas
     if (cin.fail() || f.ivertinimas < 0.0 || f.ivertinimas > 10.0)
     {
         isvalytiIvedima();
@@ -262,6 +289,22 @@ void pridetiFilma(vector<Filmas> &sarasas)
         return;
     }
     isvalytiIvedima();
+
+    // Tikrina ar toks filmas jau egzistuoja (be didziuju/mazuju raidziu skirtumo)
+    for (size_t i = 0; i < sarasas.size(); i++)
+    {
+        if (iMazasias(sarasas[i].pavadinimas) == iMazasias(f.pavadinimas) &&
+            iMazasias(sarasas[i].rezisierius) == iMazasias(f.rezisierius) &&
+            sarasas[i].metai == f.metai)
+        {
+            cout << "Toks filmas jau yra pridetas: "
+                 << sarasas[i].pavadinimas << " - "
+                 << sarasas[i].rezisierius << " - "
+                 << sarasas[i].metai << " - "
+                 << sarasas[i].zanras << endl;
+            return;
+        }
+    }
 
     sarasas.push_back(f);
     issaugotiIFaila();
@@ -287,26 +330,24 @@ void redaguotiFilma(vector<Filmas> &sarasas)
     }
     isvalytiIvedima();
 
-    // Tikrina ar indeksas teisingas
     if (idx < 0 || idx >= (int)sarasas.size())
     {
         cout << "Neegzistuojantis indeksas." << endl;
         return;
     }
 
-    // KEICIAMA: iraso laukai
     Filmas &f = sarasas[idx];
     string laikinas;
 
     cout << "Naujas pavadinimas (Enter - palikti '" << f.pavadinimas << "'): ";
     getline(cin, laikinas);
     if (!laikinas.empty())
-        f.pavadinimas = laikinas;
+        f.pavadinimas = suformatuotiTeksta(laikinas);
 
     cout << "Naujas zanras (Enter - palikti '" << f.zanras << "'): ";
     getline(cin, laikinas);
     if (!laikinas.empty())
-        f.zanras = laikinas;
+        f.zanras = suformatuotiTeksta(laikinas);
 
     cout << "Nauji metai (0 - palikti " << f.metai << "): ";
     int n;
@@ -325,7 +366,7 @@ void redaguotiFilma(vector<Filmas> &sarasas)
     cout << "Naujas rezisierius (Enter - palikti '" << f.rezisierius << "'): ";
     getline(cin, laikinas);
     if (!laikinas.empty())
-        f.rezisierius = laikinas;
+        f.rezisierius = suformatuotiTeksta(laikinas);
 
     cout << "Naujas ivertinimas (-1 - palikti " << f.ivertinimas << "): ";
     double iv;
@@ -337,7 +378,6 @@ void redaguotiFilma(vector<Filmas> &sarasas)
     else
     {
         isvalytiIvedima();
-        // Tikrina ar ivertinimas teisingas
         if (iv >= 0.0 && iv <= 10.0)
             f.ivertinimas = iv;
     }
@@ -365,19 +405,17 @@ void salintiFilma(vector<Filmas> &sarasas)
     }
     isvalytiIvedima();
 
-    // Tikrina ar indeksas teisingas
     if (idx < 0 || idx >= (int)sarasas.size())
     {
         cout << "Neegzistuojantis indeksas." << endl;
         return;
     }
-    // KEICIAMA: irasas salinamas
     sarasas.erase(sarasas.begin() + idx);
     issaugotiIFaila();
     cout << "Filmas pasalintas." << endl;
 }
 
-// Paieska pagal zanra arba rezisieriu
+// Paieska pagal zanra arba rezisieriu (be didziuju/mazuju raidziu skirtumo)
 void paieska(const vector<Filmas> &sarasas)
 {
     cout << "Pasirinkite: 1 - pagal zanra, 2 - pagal rezisieriu: ";
@@ -394,13 +432,13 @@ void paieska(const vector<Filmas> &sarasas)
     cout << "Iveskite kriteriju: ";
     string krit;
     getline(cin, krit);
+    string kritZemas = iMazasias(krit);
 
     bool rasta = false;
     for (size_t i = 0; i < sarasas.size(); i++)
     {
-        // Tikrina ar atitinka pasirinkta kriteriju
-        if ((p == 1 && sarasas[i].zanras == krit) ||
-            (p == 2 && sarasas[i].rezisierius == krit))
+        if ((p == 1 && iMazasias(sarasas[i].zanras) == kritZemas) ||
+            (p == 2 && iMazasias(sarasas[i].rezisierius) == kritZemas))
         {
             rodytiFilma(sarasas[i], (int)i);
             rasta = true;
@@ -410,7 +448,7 @@ void paieska(const vector<Filmas> &sarasas)
         cout << "Atitikmenu nerasta." << endl;
 }
 
-// Rikiavimas pagal ivertinima arba metus (nemodifikuoja originalaus saraso)
+// Rikiavimas pagal ivertinima arba metus
 void rikiavimas(vector<Filmas> sarasas)
 {
     cout << "1 - pagal ivertinima mazejanciai\n"
@@ -453,7 +491,7 @@ void rikiavimas(vector<Filmas> sarasas)
     rodytiVisus(sarasas);
 }
 
-// Isspausdina meniu vartotojui
+// Meniu
 void rodytiMeniu()
 {
     cout << "\n=== FILMU KATALOGAS ===\n"
@@ -468,7 +506,6 @@ void rodytiMeniu()
             "Pasirinkimas: ";
 }
 
-// --- PRADEDA PAGRINDINE PROGRAMOS DALIS (main) ---
 int main()
 {
     nuskaitytiIsFailo();
@@ -478,7 +515,6 @@ int main()
     {
         rodytiMeniu();
         cin >> pasirinkimas;
-        // Tikrina ar ivestis sveikasis skaicius
         if (cin.fail())
         {
             isvalytiIvedima();
@@ -519,4 +555,3 @@ int main()
     }
     return 0;
 }
-// BAIGIA PAGRINDINE PROGRAMOS DALIS

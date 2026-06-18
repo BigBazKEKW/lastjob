@@ -13,4 +13,4 @@ Begantis traukinys;Veiksmas;1985;Andrei Konchalovsky;7.2
 Liutas karalius;Animacija;1994;Roger Allers;8.5
 Ratatouille;Animacija;2007;Brad Bird;8.1
 Tarp zvaigzdziu;Mokslines fantastikos;2014;Christopher Nolan;8.6
-Babadukas;Siaubo;2014;Jennifer Kent;6.8
+The Babadook;Siaubo;2014;Jennifer Kent;6.8
