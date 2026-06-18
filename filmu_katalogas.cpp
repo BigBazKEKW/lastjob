@@ -1,6 +1,11 @@
-// filmu_katalogas.cpp
-// Kompiliuoti: g++ -std=c++17 -O2 filmu_katalogas.cpp -o filmu_katalogas
-// Paleisti:    ./filmu_katalogas
+// iostream  - konsoles ivedimui/isvedimui
+// fstream   - failu skaitymui ir rasymui
+// vector    - dinaminiam masyvui (filmu sarasui)
+// string    - teksto eiluciu darbui
+// sstream   - eilutes dalijimui pagal ; (parsinimas)
+// algorithm - rikiavimo funkcijai sort
+// cstdlib   - bendros pagalbines funkcijos (exit ir pan.)
+// limits    - cin srauto valymui esant netinkamai ivesciai
 
 #include <iostream>
 #include <fstream>
